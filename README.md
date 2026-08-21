@@ -6,8 +6,8 @@ Sulaiman
 Tahir
 Zohaib
 
-import pygame
-import random 
+import pygame #loads game tools
+import random #random stars
 
 pygame.init()
 screen = pygame.display.set_mode((1000, 700))
