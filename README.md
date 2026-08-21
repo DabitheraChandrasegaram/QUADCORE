@@ -103,6 +103,12 @@ def draw_background():
 
     draw_meteor()
 
+    #space ship
+    jet=pygame.image.load("jet.png") #load image
+    jet=pygame.transform.scale(jet,(100,100)) #change size
+    screen.blit(jet, (450, 600)) #position of jet
+
+
 
 clock = pygame.time.Clock()
 running = True
