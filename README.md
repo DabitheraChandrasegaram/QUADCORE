@@ -6,7 +6,9 @@ Sulaiman
 Tahir
 Zohaib
 import pygame  # loads game tools
-import random  # random starspygame.init()
+import random  # random stars
+
+pygame.init()
 
 screen = pygame.display.set_mode((1000, 700))
 pygame.display.set_caption("Last Defender")
@@ -26,47 +28,40 @@ meteor_col = (200, 160, 120)
 jet = pygame.image.load("jet.png").convert_alpha()
 jet = pygame.transform.scale(jet, (100, 100))
 
-enemy1_img = pygame.image.load("enemy1.png").convert_alpha() #convert alpha keeps the transparent background
-enemy1_img = pygame.transform.scale(enemy1_img, (90, 52)) #resize the image 
-
-enemy2_img = pygame.image.load("enemy2.png").convert_alpha() 
-enemy2_img = pygame.transform.scale(enemy2_img, (90, 100))
-
+enemy1_img = pygame.image.load("enemy1.png").convert_alpha()  # convert_alpha keeps transparency
+enemy2_img = pygame.image.load("enemy2.png").convert_alpha()
 enemy3_img = pygame.image.load("enemy3.png").convert_alpha()
-enemy3_img = pygame.transform.scale(enemy3_img, (90, 150))
 
-# Enemy class: Enemy 1, 2, 3 using your loaded images
 
+# Enemy class: Enemy 1, 2, 3
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x_position, y_position, enemy_type):
-        super().__init__()  # Required — sets up the sprite, sprite is something that moves on the screen, like a character or object
-        
-        # Use your pre-loaded images (enemy1_img, enemy2_img, enemy3_img)
+        super().__init__()  # Required - sets up the sprite
+
+        # Pick image, size and points based on enemy type
         if enemy_type == 1:
-            self.image = enemy1_img
-            self.image = pygame.transform.scale(self.image, (45, 35))  # Resize the image to 90x52 pixels
-            self.points = 10 #points when shot down
+            self.image = pygame.transform.scale(enemy1_img, (45, 35))
+            self.points = 10  # points when shot down
         elif enemy_type == 2:
-            self.image = enemy2_img
-            self.image = pygame.transform.scale(self.image, (45, 50))  # Resize the image to 90x100 pixels
+            self.image = pygame.transform.scale(enemy2_img, (45, 50))
             self.points = 20
         elif enemy_type == 3:
-            self.image = enemy3_img  #BIGGEST — bottom row
-            self.image = pygame.transform.scale(self.image, (45, 75))  # Resize the image to 90x150 pixels
+            self.image = pygame.transform.scale(enemy3_img, (45, 75))
             self.points = 30
-        
+
         # Set position and collision box
         self.rect = self.image.get_rect()
         self.rect.x = x_position
         self.rect.y = y_position
 
+
 enemies = pygame.sprite.Group()
 
-# Starting position of enemy 1
+# Enemy grid settings
 start_x = 55
 start_y = 20
-gap_x = 45  # space between enemies 
-gap_y = 45  # space between rows down
+gap_x = 45   # space between enemies
+gap_y = 45   # space between rows
 rows = 2
 cols = 20
 
@@ -74,15 +69,13 @@ for row in range(rows):
     for col in range(cols):
         x = start_x + (col * gap_x)
         y = start_y + (row * gap_y)
-
-        enemy_type =  1  
-        
+        enemy_type = 1
         new_enemy = Enemy(x, y, enemy_type)
         enemies.add(new_enemy)
 
 # Enemy movement settings
 enemy_direction = 1    # 1 = move right, -1 = move left
-enemy_speed = 2        # How fast they move — bigger = faste
+enemy_speed = 2        # bigger = faster
 
 # Player position and speed
 jet_x = 450
@@ -171,8 +164,6 @@ def draw_background():
 
 clock = pygame.time.Clock()
 running = True
-enemy_direction = 1  # 1 = move right, -1 = move left
-enemy_speed = 2      # How fast they move — bigger = faster
 
 while running:
     for event in pygame.event.get():
@@ -189,39 +180,28 @@ while running:
     # Keep the jet inside the screen
     jet_x = max(0, min(1000 - 100, jet_x))
 
-    draw_background()
-    enemies.draw(screen)  # Draw all enemies in the group
-
-      # Move every enemy in the current direction
+    # Move every enemy in the current direction
     for enemy in enemies:
-        enemy.rect.x += enemy_speed * enemy_direction #x position changes by speed * direction (1 or -1)
+        enemy.rect.x += enemy_speed * enemy_direction
 
-    # Check if enemies hit the LEFT or RIGHT edge — bounce them back
+    # Check if any enemy hit the LEFT or RIGHT edge
     change_direction = False
-
     for enemy in enemies:
-        # If any enemy hits the RIGHT edge of the screen
-        if enemy.rect.right >= 1000:   # 1000 = your screen width
-            change_direction = True
-        # checks if enemy hits the LEFT edge of the screen
-        elif enemy.rect.left <= 0:
+        if enemy.rect.right >= 1000 or enemy.rect.left <= 0:
             change_direction = True
 
-    # If we need to bounce — flip direction AND move all enemies down a bit
+    # Bounce: flip direction AND move all enemies down a bit
     if change_direction:
-        enemy_direction *= -1   # Reverse: right → left, left → right
+        enemy_direction *= -1
         for enemy in enemies:
-            enemy.rect.y += 15    # Drop down slightly each time they hit the edge
+            enemy.rect.y += 15
 
-    # Draw enemies and player
+    # Draw everything (background first, then enemies, then player)
+    draw_background()
     enemies.draw(screen)
     screen.blit(jet, (jet_x, jet_y))
 
-
-    # Player jet - drawn at its current position
-    screen.blit(jet, (jet_x, jet_y))
-
     pygame.display.flip()
-    clock.tick(60)
+    clock.tick(30)  # limit to 30 FPS
 
 pygame.quit()
