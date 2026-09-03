@@ -5,8 +5,8 @@ import random #aliens fire at random times
 pygame.init()
 
 # Screen size
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1300
+SCREEN_HEIGHT = 700
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Last Defender")  # optional but good
 
