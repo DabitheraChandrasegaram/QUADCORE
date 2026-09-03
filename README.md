@@ -58,25 +58,29 @@ class Enemy(pygame.sprite.Sprite):
 
 
 enemies = pygame.sprite.Group()
-
-# Enemy grid settings
+# Enemy placement: 4 rows, 20 columns, with gaps between them
 start_x = 55
 start_y = 20
 gap_x = 45
 gap_y = 45
-rows = 2
+
+rows = 4       # 4 rows total
 cols = 20
 
 for row in range(rows):
+    # Pick enemy type based on row number
+    if row == 0 or row == 1:
+        enemy_type = 1   # FIRST 2 ROWS = Enemy 1 (small)
+    elif row == 2:
+        enemy_type = 2   # THIRD ROW = Enemy 2 (medium)
+    elif row == 3:
+        enemy_type = 3   # FOURTH ROW = Enemy 3 (largest)
+
     for col in range(cols):
         x = start_x + (col * gap_x)
         y = start_y + (row * gap_y)
-
-        enemy_type = 1
-
         new_enemy = Enemy(x, y, enemy_type)
         enemies.add(new_enemy)
-
 
 # Enemy movement settings
 enemy_direction = 1
