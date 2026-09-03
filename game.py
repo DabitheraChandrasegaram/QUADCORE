@@ -37,7 +37,60 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.topleft = (x, y)
         self.direction = 1
 
+
+# === Alien movement settings — put these after your Enemy class ===
+alien_speed = 1.0
+move_down_amount = 20
+rows = 4
+cols = 10
+total_aliens = rows * cols
+
+# === Create the enemy group and spawn enemies — put this BEFORE line 41 ===
+enemy_group = pygame.sprite.Group()
+
+start_x = 60
+start_y = 50
+gap_x = 60
+gap_y = 50
+
+for row in range(rows):
+    if row == 0 or row == 1:
+        enemy_type = 1
+    elif row == 2:
+        enemy_type = 2
+    elif row == 3:
+        enemy_type = 3
+    
+    for col in range(cols):
+        x = start_x + (col * gap_x)
+        y = start_y + (row * gap_y)
+        new_enemy = Enemy(x, y, enemy_type)
+        enemy_group.add(new_enemy)
+
+# === THE MISSING FUNCTION — put this BEFORE line 41 ===
+def update_enemies():
+    global alien_speed
+    edge_hit = False
+    
+    # Move all enemies sideways
+    for enemy in enemy_group:
+        enemy.rect.x += enemy.direction * alien_speed
+        
+        # Check if any enemy hits screen edge
+        if enemy.rect.right >= SCREEN_WIDTH or enemy.rect.left <= 0:
+            edge_hit = True
+    
+    # If edge hit — reverse direction and move down
+    if edge_hit:
+        for enemy in enemy_group:
+            enemy.rect.y += move_down_amount
+            enemy.direction *= -1
+    
+    # Speed up as enemies are destroyed
+    remaining = len(enemy_group)
+    alien_speed = 1.0 + ((total_aliens - remaining) / total_aliens) * 2.0
 # MAIN LOOP needed to keep the game running
+
 running = True
 while running:
     for event in pygame.event.get():
@@ -45,6 +98,10 @@ while running:
             running = False
 
     screen.blit(background, (0, 0))  # draw background first
+
+    update_enemies()  # update enemy positions
+
+    enemy_group.draw(screen)  # draw enemies
 
     pygame.display.flip()  # update display 
 
