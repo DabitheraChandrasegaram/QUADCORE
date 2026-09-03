@@ -29,9 +29,7 @@ while running:
 
     screen.blit(background, (0, 0))  # draw background first
 
-    update_enemies()  # update enemy positions
 
-    enemy_group.draw(screen)  # draw enemies
 
     pygame.display.flip()  # update display 
 
