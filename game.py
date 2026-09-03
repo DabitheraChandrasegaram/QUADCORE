@@ -428,7 +428,7 @@ while running:
     # Draw everything
     # ------------------------------------------------
 
-    draw_background()
+    draw_background() #background
 
     enemies.draw(screen)
 
