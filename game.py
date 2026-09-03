@@ -11,7 +11,7 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Last Defender")  # optional but good
 
 # Load background picture
-background = pygame.image.load("background.png").convert()
+background = pygame.image.load("background1.png").convert()
 background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 # Load enemy images
