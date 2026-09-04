@@ -1,0 +1,39 @@
+# Player bullets - each bullet is [x, y]
+bullets = []
+bullet_speed = 10
+bullet_colour = (0, 255, 200)   # neon cyan
+shoot_cooldown = 0              # frames until we can shoot again
+
+# Enemy bullets - each is [x, y]
+enemy_bullets = []
+enemy_bullet_speed = 6
+enemy_bullet_colour = (255, 80, 80)   # red
+enemy_fire_chance = 40   # lower = enemies fire more often
+        # Shooting - hold or tap SPACE, cooldown allows continuous fire
+        if shoot_cooldown > 0:
+            shoot_cooldown -= 1
+        if keys[pygame.K_SPACE] and shoot_cooldown == 0:
+            bullets.append([jet_x + 50, jet_y])   # spawns at top-middle of the jet
+            shoot_cooldown = 10   # smaller = faster fire rate
+        # Random enemy firing - small chance each frame that one enemy shoots
+        if len(enemies) > 0 and random.randint(1, enemy_fire_chance) == 1:
+            shooter = random.choice(enemies.sprites())   # pick a random enemy
+            enemy_bullets.append([shooter.rect.centerx, shooter.rect.bottom])
+        # Move player bullets up, remove off-screen ones
+        for bullet in bullets[:]:            # [:] = copy, safe to remove while looping
+            bullet[1] -= bullet_speed        # minus = upwards
+            if bullet[1] < -10:
+                bullets.remove(bullet)
+
+        # Move enemy bullets down, remove off-screen ones
+        for bullet in enemy_bullets[:]:
+            bullet[1] += enemy_bullet_speed  # plus = downwards
+            if bullet[1] > 710:
+                enemy_bullets.remove(bullet)
+    for bullet in bullets:
+        pygame.draw.rect(screen, bullet_colour, (bullet[0] - 2, bullet[1], 4, 12))
+
+    for bullet in enemy_bullets:
+        pygame.draw.rect(screen, enemy_bullet_colour, (bullet[0] - 2, bullet[1], 4, 12))
+    bullets = []          # (with the matching names in the global line)
+    enemy_bullets = []
