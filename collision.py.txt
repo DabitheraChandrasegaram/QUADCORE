@@ -1,0 +1,52 @@
+python
+        # Slightly smaller than the 100px image = fairer hits
+        jet_rect = pygame.Rect(jet_x + 15, jet_y + 15, 70, 70
+ 
+ 
+ #player bullets vs enemies:
+
+        for bullet in bullets[:]:                    # [:] = copy, safe to remove while looping
+            bullet_rect = pygame.Rect(bullet[0] - 2, bullet[1], 4, 12)
+            hit_list = [e for e in enemies if e.rect.colliderect(bullet_rect)]
+            if hit_list:
+                enemy_hit = hit_list[0]
+                score += enemy_hit.points     # each type worth different points
+                kills += 1                    # counts towards the next wave
+                enemies.remove(enemy_hit)     # destroy the enemy
+                bullets.remove(bullet)        # bullet is used up
+
+ #enemy bullets vs player (with lives + respawn):
+
+
+        if respawn_timer > 0:
+            respawn_timer -= 1     # invincible while respawning
+        else:
+            for bullet in enemy_bullets[:]:
+                bullet_rect = pygame.Rect(bullet[0] - 2, bullet[1], 4, 12)
+                if jet_rect.colliderect(bullet_rect):
+                    enemy_bullets.remove(bullet)
+                    lives -= 1
+                    respawn_timer = 60          # 2 seconds at 30 FPS
+                    jet_x = 450                 # respawn in the middle
+                    if lives <= 0:
+                        game_state = "game_over"
+                    break
+
+#COLLISION 3 — player bullets vs barriers:
+
+        for bullet in bullets[:]:
+            bullet_rect = pygame.Rect(bullet[0] - 2, bullet[1], 4, 12)
+            hit_barriers = [b for b in barriers if b.rect.colliderect(bullet_rect)]
+            if hit_barriers:
+                hit_barriers[0].take_damage()
+                bullets.remove(bullet)
+
+#COLLISION 4 — enemy bullets vs barriers:
+
+
+        for bullet in enemy_bullets[:]:
+            bullet_rect = pygame.Rect(bullet[0] - 2, bullet[1], 4, 12)
+            hit_barriers = [b for b in barriers if b.rect.colliderect(bullet_rect)]
+            if hit_barriers:
+                hit_barriers[0].take_damage()
+                enemy_bullets.remove(bullet)
